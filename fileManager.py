@@ -1,4 +1,6 @@
 import hw
+import keyboard
+import textEditor
 
 def fileManager():
     fileManagerRunning = True
@@ -32,25 +34,35 @@ def fileManager():
             if(hw.bDown.value() and topFile + 1 < len(dirList)):
                 topFile += 1
                 inputLoop = False
-                print("down")
             #moves down
             elif(hw.bUp.value() and topFile > 0):
                 topFile -= 1
                 inputLoop = False
-                print("up")
+            #Renames a file
+            elif(hw.bMod.value()):
+                newFileName = keyboard.keyboard()
+                hw.os.rename(topFileString,newFileName)
+                hw.blk()
+                hw.oled.text("file renamed to",5,0)
+                hw.oled.text(newFileName,5,10)
+                hw.oled.show()
+                while(not hw.bA.value()):
+                    pass
+                inputLoop = False
             #runs or opens file
             elif(hw.bA.value()):
                 topFileLen = len(topFileString)
                 #.py file handler
                 if(topFileString[topFileLen - 2:topFileLen] == "py"):
-                    print("file run")
                     hw.blk()
                     hw.execFile(topFileString)
                     inputLoop = False
                     fileManagerRunning = False
-                #add another if statement here to handle more files
+                #.txt file handler
+                elif(topFileString[topFileLen - 3:topFileLen] == "txt"):
+                    textEditor.textEditor(topFileString)
+                #add another if statement here to handle more file types
                 else:
-                    print("unknown file type")
                     hw.blk()
                     hw.oled.text("Can't open this",5,0)
                     hw.oled.text("file type Press",5,10)
