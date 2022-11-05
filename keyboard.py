@@ -1,19 +1,24 @@
 import hw
+import time
 
-def keyboard():
+def keyboard(finalString):
     hw.blk()
     text = [["`","1","2","3","4","5","6","7","8","9","0","-","="],[" ","q","w","e","r","t","y","u","i","o","p","[","]","\""],[" ","a","s","d","f","g","h","j","k","l",";","/'"],[" ","z","x","c","v","b","n","m",",",".","/"]]
     modText = [["~","!","@","#","$","%","^","&","*","(",")","_","+"],[" ","Q","W","E","R","T","Y","U","I","O","P","{","}","|"],[" ","A","S","D","F","G","H","J","K","L",":","\""],[" ","Z","X","C","V","B","N","M","<",">","?"]]
     keyX = 0
     keyY = 0
-    finalString = ""
     modPressed = False
+    upPressedTime = time.ticks_ms() + 10
+    downPressedTime = time.ticks_ms() + 10
+    leftPressedTime = time.ticks_ms() + 10
+    rightPressedTime = time.ticks_ms() + 10
+    inputWaitTime = 200
 
     keyboardRunning = True
     while(keyboardRunning):
         
         #Text being typed and keyboard text
-        hw.blk()
+        hw.oled.fill(0)
         hw.oled.text(">" + finalString[-14:],5,0)
         if(modPressed):
             hw.oled.text("~!@#$%^&*()_+",5,20)
@@ -30,20 +35,30 @@ def keyboard():
         hw.oled.rect((keyX*8)+4,(keyY*10)+18,   10,    11,    1)
         hw.oled.show()
         
-        
+        hw.utime
         inputLoop = True
         while(inputLoop):
+            while(hw.bA.value()):
+                    pass
+            while(hw.bB.value()):
+                    pass
+            while(hw.bMod.value()):
+                    pass
             #Moves selected charecter
-            if(hw.bUp.value() and keyY > 0):
+            if(hw.bUp.value() and keyY > 0 and (time.ticks_ms() - upPressedTime) > inputWaitTime):
+                upPressedTime = time.ticks_ms()
                 keyY -= 1
                 inputLoop = False
-            elif(hw.bDown.value() and keyY < 3):
+            elif(hw.bDown.value() and keyY < 3 and (time.ticks_ms() - downPressedTime) > inputWaitTime):
+                downPressedTime = time.ticks_ms()
                 keyY += 1
                 inputLoop = False
-            elif(hw.bLeft.value() and keyX > 0):
+            elif(hw.bLeft.value() and keyX > 0 and (time.ticks_ms() - leftPressedTime) > inputWaitTime):
+                leftPressedTime = time.ticks_ms()
                 keyX -= 1
                 inputLoop = False
-            elif(hw.bRight.value() and keyX < 13):
+            elif(hw.bRight.value() and keyX < 13 and (time.ticks_ms() - rightPressedTime) > inputWaitTime):
+                rightPressedTime = time.ticks_ms()
                 keyX += 1
                 inputLoop = False
             #Types selected charecter
@@ -66,5 +81,7 @@ def keyboard():
             elif(hw.bStart.value()):
                 inputLoop = False
                 keyboardRunning = False
-                return finalString
-    
+                if(finalString != str("")):
+                    return finalString
+                else:
+                    return 
