@@ -21,13 +21,10 @@ bLeft = Pin(6, Pin.IN, Pin.PULL_DOWN)
 bUp = Pin(7, Pin.IN, Pin.PULL_DOWN)
 bDown = Pin(8, Pin.IN, Pin.PULL_DOWN)
 bRight = Pin(9, Pin.IN, Pin.PULL_DOWN)
-bMod = Pin(10, Pin.IN, Pin.PULL_DOWN)
+bMod = Pin(11, Pin.IN, Pin.PULL_DOWN)
 bA = Pin(12, Pin.IN, Pin.PULL_DOWN)
-bB = Pin(11, Pin.IN, Pin.PULL_DOWN)
+bB = Pin(10, Pin.IN, Pin.PULL_DOWN)
 bStart = Pin(13, Pin.IN, Pin.PULL_DOWN)
-
-def execFile(f):
-    exec(open(f).read())
 
 def blk():
     oled.fill(0)
@@ -48,7 +45,13 @@ def box(l,t,r,b,c):  # left, top, right, bottom
     horiz(l,b,r,c)
     vert(l,t,b,c)
     vert(r,t,b,c)
-    
+
+def filledBox(l,t,r,b,c):# left, top, right, bottom
+    for i in range(t,b):
+        m = r-l+1
+        for j in range(l,r):
+            oled.pixel(j, i, c)
+
 def ring2(cx,cy,r,c):   # Centre (x,y), radius, colour
     for angle in range(0, 90, 2):  # 0 to 90 degrees in 2s
         y3=int(r*math.sin(math.radians(angle)))
@@ -57,4 +60,3 @@ def ring2(cx,cy,r,c):   # Centre (x,y), radius, colour
         oled.pixel(cx-x3,cy-y3,c)
         oled.pixel(cx+x3,cy+y3,c)
         oled.pixel(cx+x3,cy-y3,c)
-
