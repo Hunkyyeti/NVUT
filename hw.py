@@ -5,6 +5,7 @@ from ssd1306 import SSD1306_I2C
 import framebuf
 import math
 import utime
+import time
 import os
 WIDTH  = 128                                            # oled display width
 HEIGHT = 64                                             # oled display height
@@ -51,7 +52,7 @@ def filledBox(l,t,r,b,c):# left, top, right, bottom
         m = r-l+1
         for j in range(l,r):
             oled.pixel(j, i, c)
-
+    
 def ring2(cx,cy,r,c):   # Centre (x,y), radius, colour
     for angle in range(0, 90, 2):  # 0 to 90 degrees in 2s
         y3=int(r*math.sin(math.radians(angle)))
@@ -60,3 +61,53 @@ def ring2(cx,cy,r,c):   # Centre (x,y), radius, colour
         oled.pixel(cx-x3,cy-y3,c)
         oled.pixel(cx+x3,cy+y3,c)
         oled.pixel(cx+x3,cy-y3,c)
+
+def pressAToCont():
+    while(bA.value()):
+        pass
+    while(not bA.value()):
+        pass
+
+def pressBToCont():
+    while(bB.value()):
+        pass
+    while(not bB.value()):
+        pass
+
+        
+def menu(items):
+    mainLoop = True
+    currentItem = 0
+    upPressedTime = time.ticks_ms()
+    downPressedTime = time.ticks_ms()
+    inputWaitTime = 200
+    while(mainLoop):
+        oled.fill(0)
+        i = 0
+        firstFile = True
+        while(i < 6 and i + currentItem < len(items)):
+            if(firstFile):
+                oled.text(">" + items[i + currentItem],5,i*10)
+                firstFile = False
+            else:
+                oled.text(" " + items[i + currentItem],5,i*10)
+            i += 1
+        oled.show()
+        inputLoop = True
+        while(bA.value()):
+            pass
+        while(inputLoop):
+                #moves down
+                if(bDown.value() and currentItem + 1 < len(items) and (time.ticks_ms() - downPressedTime) > inputWaitTime):
+                    downPressedTime = time.ticks_ms()
+                    currentItem += 1
+                    inputLoop = False
+                #moves up
+                elif(bUp.value() and currentItem > 0 and (time.ticks_ms()- upPressedTime) > inputWaitTime):
+                    upPressedTime = time.ticks_ms()
+                    currentItem -= 1
+                    inputLoop = False
+                elif(bA.value()):
+                    return currentItem
+        
+        
