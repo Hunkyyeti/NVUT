@@ -1,44 +1,66 @@
 #Too Do
 # make a better start screen
-# make an options menu
-# make it so the end screen doesn't crash
 # make a saved high score
 def snake():
     import random
     import time
     import hw
+    import keyboard
     blockSize = 6
     maxX = int(128/blockSize)
     maxY = int(64/blockSize)
     speed = 200
-    inputRate = 17
+    inputRate = 4
     
     gameLoop = True
     while(gameLoop):
         score = 0
         direction = 3
-        xCord = 6
-        yCord = 6
+        xCord = 2
+        yCord = 2
         seedNum = 0
-        snakeBody = [[6,4],[6,4],[6,5],[6,6]]
+        snakeBody = [[2,1],[2,2]]
     
-        hw.oled.fill(0)
-        hw.oled.text("Snake",30, 10)
-        hw.oled.text("Press A to Start",0, 30)
-        hw.oled.show()
-    
+        
+        
+        snakeRunning = True
+        
         while(hw.bA.value()):
             pass
-        while(not hw.bA.value()):
+        menuLoop = True
+        while(menuLoop):
+            hw.oled.fill(0)
+            hw.oled.text("Snake",30, 10)
+            hw.oled.text("Press A to Start",0, 30)
+            hw.oled.text("Press Mod for",0, 40)
+            hw.oled.text("menu",0, 50)
+            hw.oled.show()
+            menuInputLoop = True
+            while(menuInputLoop):    
+                if(hw.bA.value()):
+                    menuInputLoop = False
+                    menuLoop = False
+                elif(hw.bMod.value()):
+                    while(True):
+                        menuChoice = hw.menu(["Block Size " + str(blockSize), "Speed " + str(speed),"Exit"])
+                        if(menuChoice == 0):
+                            blockSize = int(keyboard.keyboard(str(blockSize)))
+                            maxX = int(128/blockSize)
+                            maxY = int(64/blockSize)
+                        elif(menuChoice == 1):
+                            speed = int(keyboard.keyboard(str(speed)))
+                        elif(menuChoice == 2):
+                            menuInputLoop = False
+                            break
+                    
+                         
+                 
             seedNum += 100
             hw.utime.sleep_ms(1)
-
 
         random.seed(seedNum)
         fruitX = int(random.random() * maxX)
         fruitY = int(random.random() * maxY)
-
-        snakeRunning = True
 
         while(snakeRunning):
             hw.oled.fill(0)
@@ -99,6 +121,7 @@ def snake():
                     snakeRunning = False
 
             if(fruitX == xCord and fruitY == yCord):
+                score += 1
                 newFruit = True
                 while(newFruit):
                     seedNum = seedNum + 10000
@@ -119,7 +142,7 @@ def snake():
             snakeBody.append([xCord,yCord])
 
         hw.oled.fill(0)
-        hw.oled.text("Score is " + str(score),30, 10)
+        hw.oled.text("Score is " + str(score),20, 10)
         hw.oled.text("Press A to cont.",0, 30)
         hw.oled.text("Press B to end",0,40)
         hw.oled.show()
@@ -132,4 +155,5 @@ def snake():
             elif(hw.bB.value()):
                 gameLoop = False
                 break
+            
 snake()
