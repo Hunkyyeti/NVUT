@@ -40,6 +40,29 @@ def vert(l,t,b,c):   # left, top, bottom
     n = b-t+1        # Vertical line
     for i in range(n):
         oled.pixel(l, t+i,c)
+        
+def line(x1, y1, x2, y2, color):
+    dx = x2 - x1
+    dy = y2 - y1
+    length = 0
+    if(math.fabs(dx) >= math.fabs(dy)):
+        length = math.fabs(dx)
+    else:
+        length = math.fabs(dy)
+    deltaX = dx / length
+    deltaY = dy / length
+    x = x1
+    y = y1
+    oled.pixel(int(x), int(y), color)
+    i = 1
+    while( i <= length ):
+        x = x + deltaX;
+        y = y + deltaY;
+        oled.pixel(int(x), int(y), color)
+        i+=1
+
+    
+        
 
 def box(l,t,r,b,c):  # left, top, right, bottom
     horiz(l,t,r,c)   # Hollow rectangle
@@ -109,5 +132,3 @@ def menu(items):
                     inputLoop = False
                 elif(bA.value()):
                     return currentItem
-        
-        
